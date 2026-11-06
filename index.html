@@ -1,0 +1,1331 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dark Neon — Тестирование</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 18px;
+  min-height: 100vh;
+  background: #080710;
+  color: #F5EDFF;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 760px;
+  margin: 20px auto;
+  background: #12101D;
+  padding: 22px;
+  border: 1px solid #39234E;
+  border-radius: 18px;
+  box-shadow: 0 0 30px #8B2BE522;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+h1 {
+  color: #DCA3FF;
+  text-shadow: 0 0 15px #A855F7;
+}
+
+h2, h3 {
+  color: #E3B5FF;
+}
+
+p {
+  line-height: 1.6;
+}
+
+.subtitle {
+  color: #AD9ABF;
+}
+
+button, select {
+  font-size: 15px;
+}
+
+button {
+  padding: 13px 17px;
+  background: linear-gradient(110deg, #7838C9, #C02683);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 15px #C0268333;
+}
+
+button:hover {
+  filter: brightness(1.15);
+}
+
+button:disabled {
+  background: #51465C;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.secondary {
+  background: #30213F;
+  border: 1px solid #71459A;
+  box-shadow: none;
+}
+
+.danger {
+  background: #8F2859;
+}
+
+.full {
+  width: 100%;
+}
+
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  margin-top: 7px;
+  background: #21182D;
+  border: 1px solid #604078;
+  border-radius: 9px;
+  color: white;
+  outline: none;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #D35BFF;
+}
+
+label {
+  display: block;
+  margin: 12px 0;
+  color: #EADCF5;
+}
+
+textarea {
+  min-height: 75px;
+  resize: vertical;
+}
+
+.panel {
+  padding: 17px;
+  margin: 17px 0;
+  background: #1C1429;
+  border: 1px solid #573572;
+  border-radius: 13px;
+}
+
+.question {
+  padding: 17px;
+  margin: 17px 0;
+  background: #21162F;
+  border: 1px solid #7135A0;
+  border-radius: 13px;
+}
+
+.answer {
+  display: block;
+  padding: 12px;
+  margin: 8px 0;
+  background: #2B1D3D;
+  border: 1px solid #50316E;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.answer:has(input:checked) {
+  background: #47205D;
+  border-color: #CF62FF;
+}
+
+.answer input {
+  width: auto;
+  margin: 0 9px 0 0;
+  accent-color: #D946EF;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.timer {
+  text-align: center;
+  padding: 12px;
+  color: #F2B8FF;
+  background: #29183D;
+  border: 1px solid #904AC3;
+  border-radius: 10px;
+  font-size: 19px;
+  font-weight: bold;
+  position: sticky;
+  top: 5px;
+  z-index: 5;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 17px 0;
+}
+
+.stat {
+  background: #261937;
+  border: 1px solid #67418B;
+  border-radius: 11px;
+  padding: 14px;
+  text-align: center;
+}
+
+.stat strong {
+  display: block;
+  color: #E5A5FF;
+  font-size: 23px;
+  margin-top: 8px;
+}
+
+.explanation {
+  padding: 15px;
+  margin: 13px 0;
+  border-radius: 12px;
+  background: #29152F;
+  border: 1px solid #C02683;
+}
+
+.explanation.correct {
+  background: #171F38;
+  border-color: #477CEB;
+}
+
+.explanation p {
+  overflow-wrap: anywhere;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: #000000DD;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 18px;
+  overflow-y: auto;
+  z-index: 20;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 650px;
+  margin: auto;
+  padding: 20px;
+  background: #151020;
+  border: 1px solid #914DC0;
+  border-radius: 16px;
+}
+
+.editor-question {
+  background: #21162F;
+  border: 1px solid #71459A;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.editor-question label {
+  font-size: 14px;
+}
+
+.small {
+  font-size: 13px;
+  color: #AE9ABD;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+footer {
+  text-align: center;
+  color: #806D91;
+  font-size: 12px;
+  padding: 20px;
+}
+
+@media(max-width: 480px) {
+  body {
+    padding: 8px;
+  }
+
+  .container {
+    padding: 15px;
+    margin: 8px auto;
+  }
+
+  .actions {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+  <h1>✦ DARK NEON ✦</h1>
+  <p class="subtitle">Платформа учебного тестирования</p>
+</header>
+
+<div class="actions">
+  <button class="secondary" onclick="showStudentMode()">
+    Режим ученика
+  </button>
+
+  <button onclick="showTeacherMode()">
+    Режим учителя
+  </button>
+</div>
+
+<!-- РЕЖИМ УЧЕНИКА -->
+
+<section id="studentMode">
+
+  <div class="panel">
+    <h2>Выбор теста</h2>
+
+    <label>
+      Выбери тест:
+      <select id="testSelect"></select>
+    </label>
+
+    <button class="full" onclick="startTest()">
+      Начать тест
+    </button>
+  </div>
+
+  <div id="testArea" class="hidden">
+
+    <h2 id="testTitle"></h2>
+
+    <div class="timer">
+      Время: <span id="timer">00:00</span>
+    </div>
+
+    <p class="small">
+      Выбери ответы и нажми «Завершить тест».
+    </p>
+
+    <div id="questionsArea"></div>
+
+    <button class="full" onclick="finishTest()">
+      Завершить тест
+    </button>
+
+  </div>
+
+  <div id="result" class="hidden">
+
+    <h2>✦ Результаты тестирования ✦</h2>
+
+    <div class="panel">
+      <h2 id="finalScore"></h2>
+
+      <div class="stats">
+
+        <div class="stat">
+          Время
+          <strong id="finalTime">00:00</strong>
+        </div>
+
+        <div class="stat">
+          Балл
+          <strong id="finalPercent">0%</strong>
+        </div>
+
+        <div class="stat">
+          Отвечено
+          <strong id="finalAnswered">0</strong>
+        </div>
+
+        <div class="stat">
+          Правильно
+          <strong id="finalCorrect">0</strong>
+        </div>
+
+        <div class="stat">
+          Ошибок
+          <strong id="finalWrong">0</strong>
+        </div>
+
+        <div class="stat">
+          Всего заданий
+          <strong id="finalTotal">0</strong>
+        </div>
+
+      </div>
+    </div>
+
+    <h2>Разбор ответов</h2>
+
+    <div id="resultDetails"></div>
+
+    <button class="full" onclick="backToTests()">
+      Вернуться к тестам
+    </button>
+
+  </div>
+
+</section>
+
+
+<!-- РЕЖИМ УЧИТЕЛЯ -->
+
+<section id="teacherMode" class="hidden">
+
+  <div class="panel">
+
+    <h2>✦ Панель учителя</h2>
+
+    <p class="small">
+      Создавай тесты, добавляй задания и сохраняй объяснения.
+    </p>
+
+    <button class="full" onclick="openCreator()">
+      + Создать новый тест
+    </button>
+
+    <div class="actions">
+      <button class="secondary" onclick="exportTest()">
+        Экспорт теста
+      </button>
+
+      <button class="secondary" onclick="document.getElementById('importFile').click()">
+        Импорт теста
+      </button>
+    </div>
+
+    <input
+      type="file"
+      id="importFile"
+      accept=".json,application/json"
+      class="hidden"
+      onchange="importTest(event)"
+    >
+
+  </div>
+
+  <div class="panel">
+    <h3>Сохранённые тесты</h3>
+    <div id="teacherTestList"></div>
+  </div>
+
+  <p class="small">
+    Важно: тесты пока сохраняются в браузере на этом устройстве.
+    Это демонстрационная панель, а не защищённый кабинет учителя.
+  </p>
+
+</section>
+
+</div>
+
+
+<!-- ОКНО СОЗДАНИЯ ТЕСТА -->
+
+<div id="creatorModal" class="modal hidden">
+
+  <div class="modal-content">
+
+    <h2>✦ Создание нового теста</h2>
+
+    <form id="creatorForm">
+
+      <label>
+        Название теста:
+        <input
+          id="newTestTitle"
+          type="text"
+          placeholder="Например: Биология — клетка"
+          required
+        >
+      </label>
+
+      <h3>Задания</h3>
+
+      <div id="editorQuestions"></div>
+
+      <button
+        type="button"
+        class="secondary full"
+        onclick="addQuestionEditor()"
+      >
+        + Добавить задание
+      </button>
+
+      <div class="actions">
+        <button type="submit">
+          Сохранить тест
+        </button>
+
+        <button
+          type="button"
+          class="secondary"
+          onclick="closeCreator()"
+        >
+          Отмена
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+
+
+<footer>
+  DARK NEON · Учебное тестирование
+</footer>
+
+
+<script>
+
+// ======================================
+// 1. ДЕМОНСТРАЦИОННЫЙ ТЕСТ
+// ======================================
+
+const demoTest = {
+  id: "demo-test",
+
+  title: "Демонстрационный тест",
+
+  questions: [
+
+    {
+      question: "Сколько будет 2 + 2?",
+
+      answers: ["3", "4", "5", "6"],
+
+      correct: 1,
+
+      explanation:
+        "При сложении двух и двух получается четыре."
+    },
+
+    {
+      question: "Как называется столица Франции?",
+
+      answers: ["Рим", "Берлин", "Париж", "Мадрид"],
+
+      correct: 2,
+
+      explanation:
+        "Париж является столицей Франции."
+    },
+
+    {
+      question: "Сколько дней в обычной неделе?",
+
+      answers: ["5", "6", "7", "8"],
+
+      correct: 2,
+
+      explanation:
+        "Обычная неделя состоит из семи дней."
+    }
+
+  ]
+};
+
+
+// ======================================
+// 2. ХРАНЕНИЕ ТЕСТОВ
+// ======================================
+
+const STORAGE_KEY = "darkNeonTests";
+
+function getTests() {
+
+  try {
+
+    const saved = JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || "[]"
+    );
+
+    return Array.isArray(saved) ? saved : [];
+
+  } catch (error) {
+
+    return [];
+
+  }
+
+}
+
+function saveTests(tests) {
+
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(tests)
+  );
+
+}
+
+function allTests() {
+
+  return [demoTest, ...getTests()];
+
+}
+
+let currentTest = null;
+let startTime = null;
+let timerInterval = null;
+let finished = false;
+
+
+// ======================================
+// 3. ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ
+// ======================================
+
+function showStudentMode() {
+
+  document.getElementById("studentMode")
+    .classList.remove("hidden");
+
+  document.getElementById("teacherMode")
+    .classList.add("hidden");
+
+  refreshTestSelect();
+
+}
+
+function showTeacherMode() {
+
+  document.getElementById("studentMode")
+    .classList.add("hidden");
+
+  document.getElementById("teacherMode")
+    .classList.remove("hidden");
+
+  renderTeacherTests();
+
+}
+
+
+// ======================================
+// 4. ВЫБОР ТЕСТА
+// ======================================
+
+function refreshTestSelect() {
+
+  const select = document.getElementById("testSelect");
+
+  select.innerHTML = "";
+
+  allTests().forEach(test => {
+
+    const option = document.createElement("option");
+
+    option.value = test.id;
+    option.textContent = test.title;
+
+    select.appendChild(option);
+
+  });
+
+}
+
+function selectedTest() {
+
+  const id = document.getElementById("testSelect").value;
+
+  return allTests().find(test => test.id === id);
+
+}
+
+
+// ======================================
+// 5. ЗАПУСК ТЕСТА
+// ======================================
+
+function startTest() {
+
+  currentTest = selectedTest();
+
+  if (!currentTest || !currentTest.questions.length) {
+
+    alert("Не удалось открыть тест.");
+
+    return;
+
+  }
+
+  finished = false;
+  startTime = Date.now();
+
+  document.getElementById("result")
+    .classList.add("hidden");
+
+  document.getElementById("testArea")
+    .classList.remove("hidden");
+
+  document.getElementById("testTitle")
+    .textContent = currentTest.title;
+
+  renderQuestions();
+
+  updateTimer();
+
+  clearInterval(timerInterval);
+
+  timerInterval = setInterval(updateTimer, 1000);
+
+}
+
+
+// ======================================
+// 6. ОТОБРАЖЕНИЕ ВОПРОСОВ
+// ======================================
+
+function escapeHTML(value) {
+
+  return String(value).replace(/[&<>"']/g, char => ({
+
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+
+  })[char]);
+
+}
+
+function renderQuestions() {
+
+  const area = document.getElementById("questionsArea");
+
+  area.innerHTML = "";
+
+  currentTest.questions.forEach((q, index) => {
+
+    const div = document.createElement("div");
+
+    div.className = "question";
+
+    let html = `
+      <h3>${index + 1}. ${escapeHTML(q.question)}</h3>
+    `;
+
+    q.answers.forEach((answer, answerIndex) => {
+
+      html += `
+        <label class="answer">
+          <input
+            type="radio"
+            name="question${index}"
+            value="${answerIndex}"
+          >
+          ${escapeHTML(answer)}
+        </label>
+      `;
+
+    });
+
+    div.innerHTML = html;
+
+    area.appendChild(div);
+
+  });
+
+}
+
+
+// ======================================
+// 7. ТАЙМЕР
+// ======================================
+
+function formatTime(seconds) {
+
+  const minutes = Math.floor(seconds / 60);
+
+  const remaining = seconds % 60;
+
+  return String(minutes).padStart(2, "0")
+    + ":" +
+    String(remaining).padStart(2, "0");
+
+}
+
+function updateTimer() {
+
+  if (!startTime || finished) return;
+
+  const seconds = Math.floor(
+    (Date.now() - startTime) / 1000
+  );
+
+  document.getElementById("timer").textContent =
+    formatTime(seconds);
+
+}
+
+
+// ======================================
+// 8. ЗАВЕРШЕНИЕ И ПРОВЕРКА
+// ======================================
+
+function finishTest() {
+
+  if (finished || !currentTest) return;
+
+  const unanswered = currentTest.questions.filter(
+    (q, index) =>
+      !document.querySelector(
+        `input[name="question${index}"]:checked`
+      )
+  ).length;
+
+  if (unanswered > 0) {
+
+    if (!confirm(
+      `Осталось без ответа: ${unanswered}. Завершить тест?`
+    )) {
+
+      return;
+
+    }
+
+  }
+
+  finished = true;
+
+  clearInterval(timerInterval);
+
+  const elapsed = Math.floor(
+    (Date.now() - startTime) / 1000
+  );
+
+  let correctCount = 0;
+  let answeredCount = 0;
+
+  let details = "";
+
+  currentTest.questions.forEach((q, index) => {
+
+    const selected = document.querySelector(
+      `input[name="question${index}"]:checked`
+    );
+
+    const answer = selected
+      ? Number(selected.value)
+      : -1;
+
+    if (answer !== -1) answeredCount++;
+
+    const isCorrect = answer === q.correct;
+
+    if (isCorrect) correctCount++;
+
+    details += `
+      <div class="explanation ${isCorrect ? "correct" : ""}">
+
+        <h3>${index + 1}. ${escapeHTML(q.question)}</h3>
+
+        <p>
+          <b>Твой ответ:</b>
+          ${
+            answer === -1
+              ? "Нет ответа"
+              : escapeHTML(q.answers[answer])
+          }
+        </p>
+
+        <p>
+          <b>Правильный ответ:</b>
+          ${escapeHTML(q.answers[q.correct])}
+        </p>
+
+        <p>
+          <b>Объяснение:</b>
+          ${escapeHTML(q.explanation)}
+        </p>
+
+        <p>
+          ${
+            isCorrect
+              ? "💜 Ответ верный!"
+              : "❌ Нужно повторить этот материал."
+          }
+        </p>
+
+      </div>
+    `;
+
+  });
+
+  const total = currentTest.questions.length;
+
+  const wrongCount = total - correctCount;
+
+  const percent = Math.round(
+    correctCount / total * 100
+  );
+
+  document.getElementById("testArea")
+    .classList.add("hidden");
+
+  document.getElementById("result")
+    .classList.remove("hidden");
+
+  document.getElementById("finalScore").textContent =
+    `${correctCount} из ${total} правильных ответов`;
+
+  document.getElementById("finalTime").textContent =
+    formatTime(elapsed);
+
+  document.getElementById("finalPercent").textContent =
+    percent + "%";
+
+  document.getElementById("finalAnswered").textContent =
+    answeredCount;
+
+  document.getElementById("finalCorrect").textContent =
+    correctCount;
+
+  document.getElementById("finalWrong").textContent =
+    wrongCount;
+
+  document.getElementById("finalTotal").textContent =
+    total;
+
+  document.getElementById("resultDetails").innerHTML =
+    details;
+
+  window.scrollTo(0, 0);
+
+}
+
+
+// ======================================
+// 9. ВОЗВРАТ К ТЕСТАМ
+// ======================================
+
+function backToTests() {
+
+  clearInterval(timerInterval);
+
+  finished = true;
+
+  document.getElementById("result")
+    .classList.add("hidden");
+
+  document.getElementById("testArea")
+    .classList.add("hidden");
+
+  refreshTestSelect();
+
+  window.scrollTo(0, 0);
+
+}
+
+
+// ======================================
+// 10. СОЗДАНИЕ ТЕСТА
+// ======================================
+
+function openCreator() {
+
+  document.getElementById("creatorModal")
+    .classList.remove("hidden");
+
+  document.getElementById("creatorForm").reset();
+
+  document.getElementById("editorQuestions").innerHTML = "";
+
+  addQuestionEditor();
+
+}
+
+function closeCreator() {
+
+  document.getElementById("creatorModal")
+    .classList.add("hidden");
+
+}
+
+
+// ======================================
+// 11. РЕДАКТОР ВОПРОСОВ
+// ======================================
+
+function addQuestionEditor(data = {}) {
+
+  const area = document.getElementById("editorQuestions");
+
+  const number = area.children.length + 1;
+
+  const answers = data.answers || ["", "", "", ""];
+
+  const card = document.createElement("div");
+
+  card.className = "editor-question";
+
+  card.innerHTML = `
+
+    <h3>Задание ${number}</h3>
+
+    <label>
+      Текст задания:
+      <textarea class="q-text" required
+        placeholder="Введите вопрос">${escapeHTML(data.question || "")}</textarea>
+    </label>
+
+    ${[0, 1, 2, 3].map(i => `
+
+      <label>
+        Вариант ответа ${i + 1}:
+        <input
+          class="q-answer"
+          value="${escapeHTML(answers[i] || "")}"
+          required
+          placeholder="Введите ответ"
+        >
+      </label>
+
+    `).join("")}
+
+    <label>
+      Правильный ответ:
+      <select class="q-correct">
+        <option value="0" ${data.correct === 0 ? "selected" : ""}>Ответ 1</option>
+        <option value="1" ${data.correct === 1 || data.correct === undefined ? "selected" : ""}>Ответ 2</option>
+        <option value="2" ${data.correct === 2 ? "selected" : ""}>Ответ 3</option>
+        <option value="3" ${data.correct === 3 ? "selected" : ""}>Ответ 4</option>
+      </select>
+    </label>
+
+    <label>
+      Объяснение правильного ответа:
+      <textarea class="q-explanation" required
+        placeholder="Почему этот ответ правильный?">${escapeHTML(data.explanation || "")}</textarea>
+    </label>
+
+    <button
+      type="button"
+      class="danger"
+      onclick="this.closest('.editor-question').remove(); renumberQuestions()"
+    >
+      Удалить задание
+    </button>
+
+  `;
+
+  area.appendChild(card);
+
+}
+
+function renumberQuestions() {
+
+  document.querySelectorAll(".editor-question h3")
+    .forEach((heading, index) => {
+
+      heading.textContent = `Задание ${index + 1}`;
+
+    });
+
+}
+
+
+// ======================================
+// 12. СОХРАНЕНИЕ СОЗДАННОГО ТЕСТА
+// ======================================
+
+document.getElementById("creatorForm")
+  .addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    const title = document.getElementById("newTestTitle")
+      .value.trim();
+
+    const cards = document.querySelectorAll(".editor-question");
+
+    if (!title || cards.length === 0) {
+
+      alert("Укажи название теста и добавь хотя бы одно задание.");
+
+      return;
+
+    }
+
+    const questions = [];
+
+    for (const card of cards) {
+
+      const question = card.querySelector(".q-text").value.trim();
+
+      const answers = Array.from(
+        card.querySelectorAll(".q-answer")
+      ).map(input => input.value.trim());
+
+      const correct = Number(
+        card.querySelector(".q-correct").value
+      );
+
+      const explanation = card.querySelector(
+        ".q-explanation"
+      ).value.trim();
+
+      if (
+        !question ||
+        answers.some(answer => !answer) ||
+        !explanation
+      ) {
+
+        alert("Заполни все вопросы, ответы и объяснения.");
+
+        return;
+
+      }
+
+      questions.push({
+        question,
+        answers,
+        correct,
+        explanation
+      });
+
+    }
+
+    const test = {
+
+      id: "test-" + Date.now(),
+
+      title,
+
+      questions
+
+    };
+
+    const tests = getTests();
+
+    tests.push(test);
+
+    try {
+
+      saveTests(tests);
+
+    } catch (error) {
+
+      alert("Не удалось сохранить тест. Возможно, недостаточно места в браузере.");
+
+      return;
+
+    }
+
+    closeCreator();
+
+    renderTeacherTests();
+
+    refreshTestSelect();
+
+    alert("Тест успешно сохранён!");
+
+  });
+
+
+// ======================================
+// 13. СПИСОК ТЕСТОВ УЧИТЕЛЯ
+// ======================================
+
+function renderTeacherTests() {
+
+  const area = document.getElementById("teacherTestList");
+
+  const tests = getTests();
+
+  if (tests.length === 0) {
+
+    area.innerHTML =
+      '<p class="small">Пока нет созданных тестов.</p>';
+
+    return;
+
+  }
+
+  area.innerHTML = "";
+
+  tests.forEach(test => {
+
+    const card = document.createElement("div");
+
+    card.className = "panel";
+
+    card.innerHTML = `
+
+      <h3>${escapeHTML(test.title)}</h3>
+
+      <p class="small">
+        Количество заданий: ${test.questions.length}
+      </p>
+
+      <button class="secondary full">
+        Скачать этот тест
+      </button>
+
+    `;
+
+    card.querySelector("button").onclick = () => {
+
+      downloadJSON(test);
+
+    };
+
+    area.appendChild(card);
+
+  });
+
+}
+
+
+// ======================================
+// 14. ЭКСПОРТ ТЕСТА
+// ======================================
+
+function downloadJSON(test) {
+
+  const blob = new Blob(
+    [JSON.stringify(test, null, 2)],
+    { type: "application/json" }
+  );
+
+  const url = URL.createObjectURL(blob);
+
+  const link = document.createElement("a");
+
+  link.href = url;
+
+  link.download = "test-" + test.id + ".json";
+
+  link.click();
+
+  URL.revokeObjectURL(url);
+
+}
+
+function exportTest() {
+
+  const select = document.getElementById("testSelect");
+
+  const test = allTests().find(
+    item => item.id === select.value
+  );
+
+  if (!test) {
+
+    alert("Сначала выбери тест.");
+
+    return;
+
+  }
+
+  downloadJSON(test);
+
+}
+
+
+// ======================================
+// 15. ИМПОРТ ТЕСТА
+// ======================================
+
+function importTest(event) {
+
+  const file = event.target.files[0];
+
+  if (!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function() {
+
+    try {
+
+      const test = JSON.parse(reader.result);
+
+      if (
+        !test.title ||
+        !Array.isArray(test.questions) ||
+        test.questions.length === 0 ||
+        !test.questions.every(q =>
+          typeof q.question === "string" &&
+          Array.isArray(q.answers) &&
+          q.answers.length === 4 &&
+          q.answers.every(a => typeof a === "string") &&
+          Number.isInteger(q.correct) &&
+          q.correct >= 0 &&
+          q.correct <= 3 &&
+          typeof q.explanation === "string"
+        )
+      ) {
+
+        throw new Error("Неверный формат теста.");
+
+      }
+
+      test.id = "import-" + Date.now();
+
+      const tests = getTests();
+
+      tests.push(test);
+
+      saveTests(tests);
+
+      refreshTestSelect();
+
+      renderTeacherTests();
+
+      alert("Тест успешно импортирован!");
+
+    } catch (error) {
+
+      alert("Не удалось открыть файл. Проверь, что это файл теста JSON.");
+
+    }
+
+    event.target.value = "";
+
+  };
+
+  reader.readAsText(file);
+
+}
+
+
+// ======================================
+// 16. ПЕРВОНАЧАЛЬНЫЙ ЗАПУСК
+// ======================================
+
+refreshTestSelect();
+
+renderTeacherTests();
+
+showStudentMode();
+
+</script>
+
+</body>
+</html>
